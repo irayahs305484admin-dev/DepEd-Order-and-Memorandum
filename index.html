@@ -77,7 +77,7 @@
                 </div>
                 <input type="text" id="searchInput" 
                     class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-2 focus:ring-deped-blue focus:border-deped-blue sm:text-sm transition-shadow" 
-                    placeholder="Search by Number and Year (e.g., '01 2024' or '024 2023')">
+                    placeholder="Search by Number and Year (e.g., '01 2026' or '024 2025')">
                 <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                     <span class="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded">Format: No + Year</span>
                 </div>
@@ -97,6 +97,17 @@
         <!-- List Container -->
         <div id="listContainer" class="space-y-4">
             <!-- Items will be injected here via JavaScript -->
+        </div>
+
+        <!-- Pagination Controls -->
+        <div id="paginationControls" class="flex justify-between items-center mt-8 hidden">
+            <button id="prevPageBtn" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm" onclick="changePage(-1)">
+                <i class="fa-solid fa-chevron-left mr-2"></i> Previous
+            </button>
+            <span id="pageIndicator" class="text-sm font-medium text-gray-700 bg-gray-100 border border-gray-200 px-4 py-1.5 rounded-full shadow-inner">Page 1</span>
+            <button id="nextPageBtn" class="px-4 py-2 text-sm font-medium text-white bg-deped-blue rounded-md hover:bg-blue-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm" onclick="changePage(1)">
+                Next Page <i class="fa-solid fa-chevron-right ml-2"></i>
+            </button>
         </div>
         
         <!-- Empty State (Hidden by default) -->
@@ -120,34 +131,37 @@
         let currentTab = 'orders';
         let searchQuery = '';
         let issuancesData = [];
+        let currentPage = 1;
 
-        // Mock Data for demonstration (Used if API is not yet set up)
+        // Mock Data for demonstration (Used if API is not yet set up or offline)
         const mockData = [
+            { type: 'orders', num: '017', year: '2026', title: 'Implementation of the Latest Basic Education Curriculum', date: 'Jun 06, 2026', url: 'https://www.deped.gov.ph/' },
+            { type: 'orders', num: '016', year: '2026', title: 'Updated Guidelines for the School Year 2026-2027', date: 'May 12, 2026', url: 'https://www.deped.gov.ph/' },
+            { type: 'orders', num: '015', year: '2026', title: 'National Guidelines on the Safe Return to Schools', date: 'Apr 28, 2026', url: 'https://www.deped.gov.ph/' },
+            { type: 'orders', num: '014', year: '2026', title: 'Policies on the Procurement of Educational Materials', date: 'Mar 15, 2026', url: 'https://www.deped.gov.ph/' },
+            { type: 'orders', num: '001', year: '2026', title: 'Implementation of the Revised Basic Education Curriculum', date: 'Jan 05, 2026', url: 'https://www.deped.gov.ph/' },
             { type: 'orders', num: '002', year: '2024', title: 'Immediate Removal of Administrative Tasks of Public School Teachers', date: 'Jan 26, 2024', url: 'https://www.deped.gov.ph/wp-content/uploads/DO_s2024_002.pdf' },
-            { type: 'orders', num: '001', year: '2024', title: 'Revised Guidelines on the Implementation of the National Learning Camp', date: 'Jan 10, 2024', url: 'https://www.deped.gov.ph/wp-content/uploads/DO_s2024_001.pdf' },
             { type: 'orders', num: '022', year: '2023', title: 'Implementing Guidelines on the School Calendar and Activities for the School Year 2023-2024', date: 'Aug 04, 2023', url: 'https://www.deped.gov.ph/' },
-            { type: 'orders', num: '021', year: '2023', title: '2023 Brigada Eskwela Implementing Guidelines', date: 'Aug 03, 2023', url: 'https://www.deped.gov.ph/' },
-            { type: 'orders', num: '010', year: '2023', title: 'Amendment to DepEd Order No. 03, s. 2018 (Basic Education Enrollment Policy)', date: 'May 09, 2023', url: 'https://www.deped.gov.ph/' },
-            { type: 'memoranda', num: '003', year: '2024', title: 'Administration of the Early Childhood Development (ECD) Checklist', date: 'Feb 15, 2024', url: 'https://www.deped.gov.ph/' },
-            { type: 'memoranda', num: '002', year: '2024', title: '2024 National Schools Press Conference', date: 'Feb 02, 2024', url: 'https://www.deped.gov.ph/' },
-            { type: 'memoranda', num: '001', year: '2024', title: 'Celebration of the 2024 National Dental Health Month', date: 'Jan 22, 2024', url: 'https://www.deped.gov.ph/' },
-            { type: 'memoranda', num: '054', year: '2023', title: '2023 National Reading Month Celebration', date: 'Nov 10, 2023', url: 'https://www.deped.gov.ph/' },
-            { type: 'memoranda', num: '046', year: '2023', title: 'Guidance on the Conduct of Classes in the Upcoming National and Local Elections', date: 'Oct 20, 2023', url: 'https://www.deped.gov.ph/' }
+            { type: 'memoranda', num: '014', year: '2026', title: '2026 National Schools Press Conference Guidelines', date: 'Mar 15, 2026', url: 'https://www.deped.gov.ph/' },
+            { type: 'memoranda', num: '013', year: '2026', title: 'Conduct of the 2026 Palarong Pambansa', date: 'Feb 20, 2026', url: 'https://www.deped.gov.ph/' },
+            { type: 'memoranda', num: '001', year: '2026', title: 'Celebration of the 2026 National Dental Health Month', date: 'Jan 10, 2026', url: 'https://www.deped.gov.ph/' },
+            { type: 'memoranda', num: '003', year: '2024', title: 'Administration of the Early Childhood Development (ECD) Checklist', date: 'Feb 15, 2024', url: 'https://www.deped.gov.ph/' }
         ];
 
         // Initialize App
         async function init() {
-            await fetchIssuances();
+            await fetchIssuances(currentPage);
             setupEventListeners();
         }
 
         // Fetch Data from Google Apps Script (or load mock data)
-        async function fetchIssuances() {
+        async function fetchIssuances(page = 1) {
             setLoading(true);
             try {
                 if (GOOGLE_APPS_SCRIPT_API_URL !== "") {
                     // Real API Fetch with redirect following for Google Apps Script compatibility
-                    const response = await fetch(GOOGLE_APPS_SCRIPT_API_URL, { redirect: "follow" });
+                    const separator = GOOGLE_APPS_SCRIPT_API_URL.includes('?') ? '&' : '?';
+                    const response = await fetch(`${GOOGLE_APPS_SCRIPT_API_URL}${separator}page=${page}`, { redirect: "follow" });
                     const data = await response.json();
                     if (data && data.length > 0) {
                         issuancesData = data;
@@ -161,8 +175,8 @@
                 console.warn("GAS fetch failed or empty, using direct RSS proxy fallback...", error);
                 try {
                     // Direct fallback so the app ALWAYS works even if GAS is down/unconfigured
-                    const ordersRes = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.deped.gov.ph%2Fcategory%2Fissuances%2Fdeped-orders%2Ffeed%2F');
-                    const memosRes = await fetch('https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.deped.gov.ph%2Fcategory%2Fissuances%2Fdeped-memoranda%2Ffeed%2F');
+                    const ordersRes = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent('https://www.deped.gov.ph/category/issuances/deped-orders/feed/?paged=' + page)}`);
+                    const memosRes = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent('https://www.deped.gov.ph/category/issuances/deped-memoranda/feed/?paged=' + page)}`);
                     
                     const ordersData = await ordersRes.json();
                     const memosData = await memosRes.json();
@@ -194,6 +208,7 @@
                                  year: year,
                                  title: item.title.replace(/&#8211;/g, '-').replace(/&#8217;/g, "'").replace(/&amp;/g, '&'),
                                  date: dateStr,
+                                 timestamp: d.getTime(),
                                  url: item.link
                              };
                         });
@@ -210,11 +225,27 @@
                     issuancesData = mockData; // Ultimate fallback
                 }
             } finally {
-                // Sort from latest to oldest (Assuming larger Year and larger Num means newer)
-                // In a real scenario, parsing actual Date strings is preferred.
+                // FORCE STRICT DESCENDING ORDER BY YEAR THEN NUMBER
                 issuancesData.sort((a, b) => {
-                    if(b.year !== a.year) return parseInt(b.year) - parseInt(a.year);
-                    return parseInt(b.num) - parseInt(a.num);
+                    // 1. Primary Sort: Year (Highest/Newest Year First)
+                    const yearA = parseInt(a.year) || 0;
+                    const yearB = parseInt(b.year) || 0;
+                    if (yearB !== yearA) {
+                        return yearB - yearA;
+                    }
+                    
+                    // 2. Secondary Sort: Issuance Number (Highest Number First)
+                    // We extract just the digits in case the number has a letter (e.g. "17A")
+                    const numA = parseInt(a.num.replace(/\D/g, '') || '0');
+                    const numB = parseInt(b.num.replace(/\D/g, '') || '0');
+                    if (numB !== numA) {
+                        return numB - numA;
+                    }
+                    
+                    // 3. Tertiary Sort: Exact Timestamp (Only used if two files have the exact same number and year)
+                    const timeA = a.timestamp || new Date(a.date).getTime();
+                    const timeB = b.timestamp || new Date(b.date).getTime();
+                    return timeB - timeA;
                 });
 
                 renderList();
@@ -230,8 +261,20 @@
             });
 
             document.getElementById('syncBtn').addEventListener('click', () => {
-                fetchIssuances();
+                currentPage = 1;
+                fetchIssuances(currentPage);
             });
+        }
+
+        // Handle Pagination clicks
+        async function changePage(offset) {
+            const newPage = currentPage + offset;
+            if (newPage > 0) {
+                currentPage = newPage;
+                await fetchIssuances(currentPage);
+                // Smooth scroll back to top of the list after loading
+                document.getElementById('searchInput').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
         }
 
         // Tab Switching Logic
@@ -282,12 +325,29 @@
             }
 
             // Display Results or Empty State
+            const paginationControls = document.getElementById('paginationControls');
+
             if (filteredData.length === 0) {
                 container.classList.add('hidden');
+                if (paginationControls) paginationControls.classList.add('hidden');
                 emptyState.classList.remove('hidden');
             } else {
                 emptyState.classList.add('hidden');
                 container.classList.remove('hidden');
+
+                // Pagination visibility logic
+                if (paginationControls) {
+                    if (searchQuery) {
+                        // Hide pagination when searching, since search only filters current page
+                        paginationControls.classList.add('hidden');
+                    } else {
+                        paginationControls.classList.remove('hidden');
+                        document.getElementById('pageIndicator').innerText = `Page ${currentPage}`;
+                        document.getElementById('prevPageBtn').disabled = currentPage === 1;
+                        // If we received very few items, assume we've hit the oldest available page
+                        document.getElementById('nextPageBtn').disabled = filteredData.length < 5; 
+                    }
+                }
 
                 filteredData.forEach(item => {
                     const prefix = item.type === 'orders' ? 'DO' : 'DM';
