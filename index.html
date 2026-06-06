@@ -134,18 +134,30 @@
         let currentPage = 1;
 
         // Mock Data for demonstration (Used if API is not yet set up or offline)
+        // FIXED: Filled in the missing gaps so the preview shows a perfect descending sequence by Year then Number!
         const mockData = [
+            // 2026 Orders (Descending from 17)
             { type: 'orders', num: '017', year: '2026', title: 'Implementation of the Latest Basic Education Curriculum', date: 'Jun 06, 2026', url: 'https://www.deped.gov.ph/' },
             { type: 'orders', num: '016', year: '2026', title: 'Updated Guidelines for the School Year 2026-2027', date: 'May 12, 2026', url: 'https://www.deped.gov.ph/' },
             { type: 'orders', num: '015', year: '2026', title: 'National Guidelines on the Safe Return to Schools', date: 'Apr 28, 2026', url: 'https://www.deped.gov.ph/' },
             { type: 'orders', num: '014', year: '2026', title: 'Policies on the Procurement of Educational Materials', date: 'Mar 15, 2026', url: 'https://www.deped.gov.ph/' },
-            { type: 'orders', num: '001', year: '2026', title: 'Implementation of the Revised Basic Education Curriculum', date: 'Jan 05, 2026', url: 'https://www.deped.gov.ph/' },
-            { type: 'orders', num: '002', year: '2024', title: 'Immediate Removal of Administrative Tasks of Public School Teachers', date: 'Jan 26, 2024', url: 'https://www.deped.gov.ph/wp-content/uploads/DO_s2024_002.pdf' },
-            { type: 'orders', num: '022', year: '2023', title: 'Implementing Guidelines on the School Calendar and Activities for the School Year 2023-2024', date: 'Aug 04, 2023', url: 'https://www.deped.gov.ph/' },
+            { type: 'orders', num: '013', year: '2026', title: 'Guidelines on the Conduct of Co-curricular Activities', date: 'Mar 01, 2026', url: 'https://www.deped.gov.ph/' },
+            { type: 'orders', num: '012', year: '2026', title: 'Amendments to the DepEd Merit Selection Plan', date: 'Feb 15, 2026', url: 'https://www.deped.gov.ph/' },
+            { type: 'orders', num: '011', year: '2026', title: 'Standardization of School Forms', date: 'Jan 28, 2026', url: 'https://www.deped.gov.ph/' },
+            { type: 'orders', num: '010', year: '2026', title: 'Early Registration for School Year 2026-2027', date: 'Jan 10, 2026', url: 'https://www.deped.gov.ph/' },
+            
+            // 2025 Orders (Transitions perfectly to the previous year)
+            { type: 'orders', num: '045', year: '2025', title: 'Year-End Guidelines for 2025', date: 'Dec 15, 2025', url: 'https://www.deped.gov.ph/' },
+            { type: 'orders', num: '044', year: '2025', title: 'National Reading Month Celebration', date: 'Nov 02, 2025', url: 'https://www.deped.gov.ph/' },
+
+            // 2026 Memoranda (Descending from 14)
             { type: 'memoranda', num: '014', year: '2026', title: '2026 National Schools Press Conference Guidelines', date: 'Mar 15, 2026', url: 'https://www.deped.gov.ph/' },
             { type: 'memoranda', num: '013', year: '2026', title: 'Conduct of the 2026 Palarong Pambansa', date: 'Feb 20, 2026', url: 'https://www.deped.gov.ph/' },
-            { type: 'memoranda', num: '001', year: '2026', title: 'Celebration of the 2026 National Dental Health Month', date: 'Jan 10, 2026', url: 'https://www.deped.gov.ph/' },
-            { type: 'memoranda', num: '003', year: '2024', title: 'Administration of the Early Childhood Development (ECD) Checklist', date: 'Feb 15, 2024', url: 'https://www.deped.gov.ph/' }
+            { type: 'memoranda', num: '012', year: '2026', title: 'National Festival of Talents', date: 'Feb 05, 2026', url: 'https://www.deped.gov.ph/' },
+            { type: 'memoranda', num: '011', year: '2026', title: 'Celebration of the 2026 National Dental Health Month', date: 'Jan 10, 2026', url: 'https://www.deped.gov.ph/' },
+            
+            // 2025 Memoranda
+            { type: 'memoranda', num: '098', year: '2025', title: 'Submission of Year-End Reports', date: 'Dec 20, 2025', url: 'https://www.deped.gov.ph/' }
         ];
 
         // Initialize App
